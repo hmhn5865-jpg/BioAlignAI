@@ -1,0 +1,22 @@
+BioAlignAI Reasoning Report
+
+Step 1: DNA Comparison
+Reference DNA:
+ATGGCC
+
+Variant DNA:
+ATGACC
+
+Step 2: Mutation Detection
+  Position Reference Variant         Type Classification
+1        4         G       A Substitution     Transition
+
+Step 3: Protein Comparison
+Reference Protein:
+MA
+
+Variant Protein:
+MT
+
+Step 4: Biological Interpretation
+The nucleotide change alters the amino acid sequence (Missense mutation).
