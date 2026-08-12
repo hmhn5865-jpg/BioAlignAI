@@ -1,3 +1,4 @@
+
 # ==========================================
 # BioAlignAI Dashboard
 # ==========================================
@@ -17,6 +18,7 @@ ui <- fluidPage(
     "🧬 BioAlignAI Dashboard"
   ),
   
+  
   sidebarLayout(
     
     sidebarPanel(
@@ -27,11 +29,13 @@ ui <- fluidPage(
         value = "ATGGCC"
       ),
       
+      
       textInput(
         "sequence2",
         "Variant DNA Sequence:",
         value = "ATGACC"
       ),
+      
       
       selectInput(
         "analysis",
@@ -47,6 +51,7 @@ ui <- fluidPage(
         )
       ),
       
+      
       conditionalPanel(
         
         condition = "input.analysis == 'AI Agent Analysis'",
@@ -61,6 +66,7 @@ ui <- fluidPage(
         
       ),
       
+      
       actionButton(
         "run",
         "Run BioAnalysis"
@@ -68,28 +74,13 @@ ui <- fluidPage(
       
     ),
     
+    
     mainPanel(
       
       h3("BioAlignAI Result"),
       
-      div(
-        style = "
-          background-color: #f8f9fa;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          padding: 20px;
-          margin-bottom: 25px;
-          white-space: pre-wrap;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          font-family: monospace;
-          line-height: 1.5;
-        ",
-        
-        textOutput(
-          "output"
-        )
-        
+      verbatimTextOutput(
+        "output"
       ),
       
       br(),
@@ -97,8 +88,7 @@ ui <- fluidPage(
       h3("Visualization"),
       
       plotOutput(
-        "gc_plot",
-        height = "400px"
+        "gc_plot"
       )
       
     )
@@ -113,6 +103,7 @@ ui <- fluidPage(
 # ==========================================
 
 server <- function(input, output){
+  
   
   result <- reactiveVal("")
   
@@ -276,14 +267,10 @@ server <- function(input, output){
         )
         
         
-        formatted_result <- format_dashboard_result(
-          impact_result,
-          input$analysis
-        )
-        
-        
         result(
-          formatted_result
+          generate_impact_report(
+            impact_result
+          )
         )
         
       }
@@ -295,38 +282,16 @@ server <- function(input, output){
       
       if(input$analysis == "Mutation Explanation"){
         
-        mutation <- detect_mutations(
-          input$sequence1,
-          input$sequence2
-        )
-        
-        if(nrow(mutation) == 0){
-          
-          explanation_result <- "No mutation detected between the reference and variant sequences."
-          
-        } else {
-          
-          mutation_type <- classify_substitution(
-            mutation$Reference[1],
-            mutation$Variant[1]
-          )
-          
-          explanation_result <- explain_alignment_mutation(
-            mutation$Reference[1],
-            mutation$Variant[1],
-            mutation$Position[1],
-            mutation_type
-          )
-        }
-        
-        formatted_result <- format_dashboard_result(
-          explanation_result,
-          input$analysis
-        )
-        
         result(
-          formatted_result
+          format_dashboard_result(
+            generate_explanation(
+              input$sequence1,
+              input$sequence2
+            ),
+            input$analysis
+          )
         )
+        
       }
       
       
@@ -346,14 +311,11 @@ server <- function(input, output){
         )
         
         
-        annotation_result <- generate_annotation_report(
-          dna_result,
-          protein_result
-        )
-        
-        
         result(
-          annotation_result
+          generate_annotation_report(
+            dna_result,
+            protein_result
+          )
         )
         
       }
@@ -365,21 +327,12 @@ server <- function(input, output){
       
       if(input$analysis == "GC Content"){
         
-        gc_result <- generate_gc_report(
-          calculate_gc_content(
-            input$sequence1
-          )
-        )
-        
-        
-        formatted_result <- format_dashboard_result(
-          gc_result,
-          input$analysis
-        )
-        
-        
         result(
-          formatted_result
+          generate_gc_report(
+            calculate_gc_content(
+              input$sequence1
+            )
+          )
         )
         
       }
@@ -396,19 +349,10 @@ server <- function(input, output){
         )
         
         
-        translation_report <- generate_translation_report(
-          translation_result
-        )
-        
-        
-        formatted_result <- format_dashboard_result(
-          translation_report,
-          input$analysis
-        )
-        
-        
         result(
-          formatted_result
+          generate_translation_report(
+            translation_result
+          )
         )
         
       }
@@ -420,18 +364,16 @@ server <- function(input, output){
       
       if(input$analysis == "AI Agent Analysis"){
         
-        agent_result <- agent_brain(
-          input$agent_request
-        )
-        
-        
         result(
-          agent_result
+          agent_brain(
+            input$agent_request
+          )
         )
         
       }
       
     }
+    
   )
   
   
@@ -439,7 +381,7 @@ server <- function(input, output){
   # Text Output
   # ==========================================
   
-  output$output <- renderText({
+  output$output <- renderPrint({
     
     result()
     
@@ -455,10 +397,6 @@ server <- function(input, output){
     req(input$run)
     
     
-    # --------------------------------------
-    # GC Content Visualization
-    # --------------------------------------
-    
     if(
       input$analysis == "GC Content"
     ){
@@ -469,10 +407,6 @@ server <- function(input, output){
       
     }
     
-    
-    # --------------------------------------
-    # Sequence Alignment Visualization
-    # --------------------------------------
     
     if(
       input$analysis == "Sequence Alignment"

@@ -12,9 +12,13 @@ files <- c(
   "protein_impact.R",
   "report.R",
   "planner.R",
-  "agent.R"
+  "agent.R",
+  "gene_annotation.R",
+  "protein_annotation.R",
+  "database_connector.R",
+  "confidence_score.R",
+  "annotation_report.R"
 )
-
 
 for(file in files){
   
@@ -24,6 +28,5 @@ for(file in files){
   )
   
 }
-
 
 print("BioAlignAI Loaded Successfully!")

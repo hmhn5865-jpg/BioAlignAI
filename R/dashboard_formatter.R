@@ -3,34 +3,53 @@
 # ==========================================
 
 
-format_dashboard_result <- function(result, type){
+format_dashboard_result <- function(result, type) {
   
   
-  if(type == "Mutation Impact"){
-    
+  # ----------------------------------------
+  # Mutation Impact
+  # ----------------------------------------
+  
+  if (type == "Mutation Impact") {
     
     return(
       paste0(
         
-        "🧬 BioAlignAI Mutation Impact Report\n\n",
+        "========================================\n",
+        "      BIOALIGNAI MUTATION IMPACT REPORT\n",
+        "========================================\n\n",
         
-        "Reference DNA:\n",
-        result$Reference_DNA,
+        "REFERENCE DNA\n",
+        "-------------\n",
+        result$reference_dna,
         
-        "\n\nVariant DNA:\n",
-        result$Variant_DNA,
+        "\n\nVARIANT DNA\n",
+        "-----------\n",
+        result$variant_dna,
         
-        "\n\nReference Protein:\n",
-        result$Reference_Protein,
+        "\n\nREFERENCE PROTEIN\n",
+        "-----------------\n",
+        result$reference_protein,
         
-        "\n\nVariant Protein:\n",
-        result$Variant_Protein,
+        "\n\nVARIANT PROTEIN\n",
+        "---------------\n",
+        result$variant_protein,
         
-        "\n\nMutation Effect:\n",
-        result$Effect,
+        "\n\nPROTEIN IMPACT\n",
+        "--------------\n",
+        result$impact,
         
-        "\n\nInterpretation:\n",
-        "The nucleotide change alters the amino acid sequence."
+        "\n\nBIOLOGICAL INTERPRETATION\n",
+        "-------------------------\n",
+        
+        if (isTRUE(result$protein_changed)) {
+          paste0(
+            "The nucleotide change resulted in a change ",
+            "in the translated protein sequence."
+          )
+        } else {
+          "The nucleotide change did not alter the translated protein sequence."
+        }
         
       )
     )
@@ -38,42 +57,56 @@ format_dashboard_result <- function(result, type){
   }
   
   
+  # ----------------------------------------
+  # Mutation Explanation
+  # ----------------------------------------
   
-  if(type == "Mutation Explanation"){
+  if (type == "Mutation Explanation") {
     
     return(result)
     
   }
   
   
+  # ----------------------------------------
+  # Sequence Annotation
+  # ----------------------------------------
   
-  if(type == "Sequence Annotation"){
+  if (type == "Sequence Annotation") {
     
     return(result)
     
   }
   
   
+  # ----------------------------------------
+  # GC Content
+  # ----------------------------------------
   
-  if(type == "GC Content"){
+  if (type == "GC Content") {
     
     return(result)
     
   }
   
   
+  # ----------------------------------------
+  # Translation
+  # ----------------------------------------
   
-  if(type == "Translation"){
+  if (type == "Translation") {
     
     return(result)
     
   }
   
   
+  # ----------------------------------------
+  # Default
+  # ----------------------------------------
   
   return(
     "Unable to format result."
   )
-  
   
 }
